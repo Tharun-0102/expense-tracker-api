@@ -159,3 +159,4 @@ E:\Expense Tracker\Expense_Tracker_backend\obj\Debug\net10.0\refint\Expense_Trac
 E:\Expense Tracker\Expense_Tracker_backend\obj\Debug\net10.0\Expense_Tracker_backend.pdb
 E:\Expense Tracker\Expense_Tracker_backend\obj\Debug\net10.0\Expense_Tracker_backend.genruntimeconfig.cache
 E:\Expense Tracker\Expense_Tracker_backend\obj\Debug\net10.0\ref\Expense_Tracker_backend.dll
+E:\Expense Tracker\Expense_Tracker_backend\obj\Debug\net10.0\Expense_Tracker_backend.sourcelink.json
