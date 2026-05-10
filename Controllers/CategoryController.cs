@@ -34,7 +34,6 @@ public class CategoryController : ControllerBase
         Category category = new Category()
         {
             Name = request.Name,
-            Type = request.Type,
             UserId = int.Parse(userId!)
         };
 

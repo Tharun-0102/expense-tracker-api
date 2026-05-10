@@ -35,6 +35,7 @@ public class ExpenseController : ControllerBase
         {
             Amount = request.Amount,
             Title = request.Title,
+            Type = request.Type,
             CreatedAt = DateTime.UtcNow,
             CategoryId = request.CategoryId,
             UserId = int.Parse(userId!)
@@ -103,6 +104,7 @@ public class ExpenseController : ControllerBase
 
         expense.Amount = request.Amount;
         expense.Title = request.Title;
+        expense.Type = request.Type;
         expense.CreatedAt = DateTime.UtcNow;
         expense.CategoryId = request.CategoryId;
 
