@@ -97,10 +97,8 @@ public class ExpenseController : ControllerBase
 
         var indianTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
 
-        var indianTime = TimeZoneInfo.ConvertTimeFromUtc(
-            DateTime.UtcNow,
-            indianTimeZone
-        );
+       DateTime indianTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "India Standard Time");
+
 
         expense.Amount = request.Amount;
         expense.Title = request.Title;
