@@ -25,7 +25,8 @@ public class DashboardController : ControllerBase
 
     [Authorize]
     [HttpGet("today-transaction")]
-    public async Task<IActionResult> TodaysTransaction()
+    public async Task<IActionResult>
+     TodaysTransactionFilter([FromQuery] string? type)
     {
         var userId =
             User.FindFirst(
@@ -39,16 +40,33 @@ public class DashboardController : ControllerBase
 
         var today = DateTime.UtcNow.Date;
 
-        var transactions =
-            await _context.Expenses
+        var query =
+            _context.Expenses
                 .Where(x =>
                     x.UserId == int.Parse(userId)
                     &&
                     x.CreatedAt.Date == today
-                )
+                );
+
+        // Filter
+        if (!string.IsNullOrEmpty(type)
+            &&
+            type.ToLower() != "both")
+        {
+            query =
+                query.Where(x =>
+                    x.Type.ToLower() ==
+                    type.ToLower()
+                );
+        }
+
+        var transactions =
+            await query
+
                 .OrderByDescending(x =>
                     x.CreatedAt
                 )
+
                 .Select(x => new
                 {
                     x.Id,
@@ -56,14 +74,18 @@ public class DashboardController : ControllerBase
                     x.Title,
                     x.Type,
                     x.CategoryId,
+
                     Date = x.CreatedAt
-                    .ToLocalTime()
-                    .ToString("yyyy-MM-dd"),
+                        .ToLocalTime()
+                        .ToString("yyyy-MM-dd"),
+
                     Time = x.CreatedAt
-                    .ToLocalTime()
-                    .ToString("hh:mm tt")
+                        .ToLocalTime()
+                        .ToString("hh:mm tt")
                 })
+
                 .ToListAsync();
+
         return Ok(transactions);
     }
 }
