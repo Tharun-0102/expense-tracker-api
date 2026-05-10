@@ -25,9 +25,7 @@ public class DashboardController : ControllerBase
 
     [Authorize]
     [HttpGet("today-transaction")]
-    public async Task<IActionResult> TodaysTransactionFilter(
-    [FromQuery] string? type
-)
+    public async Task<IActionResult> TodaysTransactionFilter()
     {
         var userId = User
             .FindFirst(ClaimTypes.NameIdentifier)
@@ -46,17 +44,6 @@ public class DashboardController : ControllerBase
                 &&
                 x.CreatedAt.Date == today
             );
-
-        // Filter Logic
-        if (!string.IsNullOrEmpty(type)
-            &&
-            type.Trim().ToLower() != "both")
-        {
-            query = query.Where(x =>
-                x.Type.Trim().ToLower() ==
-                type.Trim().ToLower()
-            );
-        }
 
         var transactions = await query
 
@@ -89,4 +76,76 @@ public class DashboardController : ControllerBase
 
         return Ok(transactions);
     }
+
+    [Authorize]
+[HttpGet("todays-transaction/{type}")]
+public async Task<IActionResult> TodaysTransactionFilter(
+    string type
+)
+{
+    var userId =
+        User.FindFirst(
+            ClaimTypes.NameIdentifier
+        )?.Value;
+
+    if (userId == null)
+    {
+        return Unauthorized();
+    }
+
+    var today =
+        DateTime.UtcNow.Date;
+
+    var query =
+        _context.Expenses
+            .Where(x =>
+                x.UserId ==
+                    int.Parse(userId)
+                &&
+                x.CreatedAt.Date ==
+                    today
+            );
+
+    // Filter
+    if (type.ToLower() != "both")
+    {
+        query =
+            query.Where(x =>
+                x.Type.Trim().ToLower() ==
+                type.Trim().ToLower()
+            );
+    }
+
+    var transactions =
+        await query
+
+            .OrderByDescending(x =>
+                x.CreatedAt
+            )
+
+            .Select(x => new
+            {
+                x.Id,
+
+                x.Amount,
+
+                x.Title,
+
+                x.Type,
+
+                x.CategoryId,
+
+                Date = x.CreatedAt
+                    .ToLocalTime()
+                    .ToString("yyyy-MM-dd"),
+
+                Time = x.CreatedAt
+                    .ToLocalTime()
+                    .ToString("hh:mm tt")
+            })
+
+            .ToListAsync();
+
+    return Ok(transactions);
+}
 }
